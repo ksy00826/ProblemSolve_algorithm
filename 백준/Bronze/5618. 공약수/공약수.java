@@ -11,14 +11,14 @@ public class Main {
 		int N = Integer.parseInt(in.readLine());
 		String[] lineArr = in.readLine().split(" ");
 		
-		int i = 0;
 		nums = new int[N];
+		int i = 0;
 		for (String numStr : lineArr) {
 			nums[i++] = Integer.parseInt(numStr);
 		}
 		
 		//logic
-		for (int n = 1; n <= minNum(); n++) {
+		for (int n = 1; n <= getMinNum(); n++) {
 			boolean isDivisor = true;
 			for (int num : nums) {
 				if (num % n != 0) {
@@ -30,7 +30,7 @@ public class Main {
 		}
 	}
 	
-	public static int minNum() {
+	public static int getMinNum() {
 		int minVal = Integer.MAX_VALUE;
 		for (int num : nums) {
 			if (minVal > num) minVal = num;

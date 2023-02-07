@@ -17,37 +17,33 @@ public class Main {
 		
 		int stuN = Integer.parseInt(in.readLine());
 		
+		//logic
 		while(stuN-- > 0) {
-			//inputStu
+			//inputStudent
 			arr = in.readLine().split(" ");
 			String who = arr[0];
 			int num = Integer.parseInt(arr[1]);
 			
-			if (who.equals("1")) {
-				//남자
-				changeMan(num);
-			}
-			else {
-				//여자
-				changeWoman(num);
-			}
-			
+			if (who.equals("1")) changeMan(num); //남자
+			else 				changeWoman(num); //여자
 		}
 		
+		//print
 		int idx = 1;
 		while(true) {
-			if (idx == status.length) break;
+			if (idx == status.length) break; //끝
 			
 			sb.append(status[idx]);
-			if (idx % 20 == 0) sb.append('\n');
-			else sb.append(' ');
+			if (idx % 20 == 0)	sb.append('\n');
+			else 				sb.append(' ');
 			idx++;
 		}
 		System.out.println(sb);
 	}
 
 	private static void changeWoman(int num) {
-		int i = 0;
+		int i = 1;
+		onOff(num); //가운데
 		while(true) {
 			if ((num - i >= 1 && num + i < status.length) //인덱스 0은 제외
 					&& (status[num - i] == status[num + i])) {
@@ -57,7 +53,6 @@ public class Main {
 			}
 			else break;
 		}
-		onOff(num); //가운데는 중복되니까
 	}
 
 	private static void changeMan(int num) {

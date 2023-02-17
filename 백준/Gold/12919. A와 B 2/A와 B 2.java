@@ -31,18 +31,18 @@ public class Main {
 		System.out.println(res);
 	}
 	
-	private static boolean subStr(String s) {
-		boolean isSub = false;
-		for (int i = 0; i < T.length()-s.length() + 1; i++) {
-			String str = T.substring(i, i+s.length());
-			StringBuffer sb = new StringBuffer(str);
-			if (str.equals(s) || sb.reverse().toString().equals(s)) {
-				isSub = true;
-				break;
-			}
-		}
-		
-		return isSub;
+	private static boolean subStr(String s) { //- contains 하면 됨
+//		for (int i = 0; i < T.length()-s.length() + 1; i++) {
+//			String str = T.substring(i, i+s.length());
+//			StringBuffer sb = new StringBuffer(str);
+//			if (str.equals(s) || sb.reverse().toString().equals(s)) {
+//				isSub = true;
+//				break;
+//			}
+//		}
+		StringBuffer sb = new StringBuffer(T);
+		if (T.contains(s) || sb.reverse().toString().contains(s)) return true;
+		return false;
 	}
 
 	private static void dfs(String str, int cntS) {
@@ -52,7 +52,7 @@ public class Main {
 		}
 		if (str.length() >= T.length()
 				|| cntS > cntT
-				|| !subStr(str)) return;
+				|| !subStr(str)) return; //조건에 substr 계속 추가했더니 통과!! 
 		
 		//연산1
 		String newStr = str.concat("A");

@@ -45,6 +45,7 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		
+		//input
 		T = Integer.parseInt(in.readLine());
 		Pos[] input = new Pos[T];
 		
@@ -65,14 +66,15 @@ public class Main {
 				}
 			}
 		}
-		
-		
-		
+
+		//logic
+		//1. 왼쪽 아래 좌표부터 시작해서 좌표를 정제하여 pos에 넣음
 		int maxY = 0;
 		int minX = Integer.MAX_VALUE;
 		int maxX = Integer.MIN_VALUE;
 		int preY = 0;
-		for (int i = startI; i < T; i++) {
+		int i = startI;
+		while(true) {
 			int x = input[i].r;
 			int y = input[i].h;
 			
@@ -94,32 +96,12 @@ public class Main {
 				maxY = Math.max(maxY, y); //가장 큰 값으로 저장
 			}
 			preY = y;
+			i++;
+			i %= T;
+			if (i == startI) break;
 		}
-		for (int i = 0; i < startI; i++) {
-			int x = input[i].r;
-			int y = input[i].h;
-			
-			if (preY < 0 && y > 0) {
-				minX = x;
-				maxX = x;
-				maxY = y;
-			}
-			else if (preY > 0 && y < 0) {
-				pos.add(new Pos(minX, maxY));
-				pos.add(new Pos(maxX, maxY));
-				minX = Integer.MAX_VALUE;
-				maxX = Integer.MIN_VALUE;
-				maxY = 0;
-			}
-			if (y > 0) {
-				minX = Math.min(minX, x);
-				maxX = Math.max(maxX, x);
-				maxY = Math.max(maxY, y); //가장 큰 값으로 저장
-			}
-			preY = y;
-		}
-		//logic
-		//sort : r값 기준 오름차순 정렬
+		
+		//2. sort : r값 기준 오름차순 정렬
 		Collections.sort(pos, new Comparator<Pos>() {
 
 			@Override
@@ -127,11 +109,8 @@ public class Main {
 				return o1.r - o2.r;
 			}
 		});
-//		for (Pos p : pos) {
-//			System.out.println(pos);
-//		}
 		
-		//리스트에서 값을 하나씩 꺼내오면서, 스택의 봉우리의 높이와 꺼내온 봉우리의 높이를 비교
+		//3. 리스트에서 값을 하나씩 꺼내오면서, 스택 맨 위의 봉우리의 높이와 꺼내온 봉우리의 높이를 비교
 		int ans1 = 0; //초기값 0
 		int ans2 = 0; //초기값 0
 		boolean many = false;

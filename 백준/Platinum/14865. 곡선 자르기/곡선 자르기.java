@@ -81,8 +81,9 @@ public class Main {
 		//logic
 		//1. 왼쪽 아래 좌표부터 시작해서 좌표를 정제하여 pos에 넣음
 		int maxY = 0;
-		int minX = Integer.MAX_VALUE;
-		int maxX = Integer.MIN_VALUE;
+//		int minX = Integer.MAX_VALUE;
+//		int maxX = Integer.MIN_VALUE;
+		int minX = 0, maxX = 0;
 		int preY = 0;
 		int i = startI;
 		while(true) {
@@ -91,19 +92,19 @@ public class Main {
 			
 			if (preY < 0 && y > 0) {
 				minX = x;
-				maxX = x;
+//				maxX = x;
 				maxY = y;
 			}
 			else if (preY > 0 && y < 0) {
 				pos.add(new Pos(minX, maxY));
-				pos.add(new Pos(maxX, maxY));
-				minX = Integer.MAX_VALUE;
-				maxX = Integer.MIN_VALUE;
+				pos.add(new Pos(x, maxY));
+//				minX = Integer.MAX_VALUE;
+//				maxX = Integer.MIN_VALUE;
 				maxY = 0;
 			}
 			if (y > 0) {
-				minX = Math.min(minX, x);
-				maxX = Math.max(maxX, x);
+//				minX = Math.min(minX, x);
+//				maxX = Math.max(maxX, x);
 				maxY = Math.max(maxY, y); //가장 큰 값으로 저장
 			}
 			preY = y;

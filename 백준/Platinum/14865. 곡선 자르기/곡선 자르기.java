@@ -17,7 +17,8 @@ public class Main {
 	 * c 값이 연속되면서 c > 0인 좌표 두 개의 r 좌표 쌍이 봉우리의 왼쪽, 오른쪽 좌표이다.
 	 * 선은 축과 수직되기 때문에 다음과 같은 정보를 저장함으로써 봉우리를 판별할 수 있다.
 	 * => 이렇게만 넣으면 안됨. 하나의 봉우리에도 여러 개의 모서리가 있을 수 있기 때문에,
-	 * 아래 코드와 같이 minX, maxX, maxY를 구해서 넣어줘야 함.(직교다각형은 겹치지 않기 때문에 이렇게 좌표를 정제할 수 있음)
+	 * 아래 코드와 같이 maxY를 구해서 넣어줘야 함.(직교다각형은 겹치지 않기 때문에 이렇게 좌표를 정제할 수 있음)
+	 * (x는 그대로 넣으면 됨. 여기서 maxY 구하지 않고, 건물 하나를 괄호 쌍으로 보고 해도 됨. 열리는 곳인지, 닫히는 곳인지)
 	 * 
 	 * 1. 각 봉우리의 왼쪽 위 좌표와 높이, 오른쪽 위 좌표와 높이를 각각 저장 => (r1, h), (r2, h)
 	 * 2. r값을 기준으로 오름차순 정렬
@@ -81,9 +82,7 @@ public class Main {
 		//logic
 		//1. 왼쪽 아래 좌표부터 시작해서 좌표를 정제하여 pos에 넣음
 		int maxY = 0;
-//		int minX = Integer.MAX_VALUE;
-//		int maxX = Integer.MIN_VALUE;
-		int minX = 0, maxX = 0;
+		int leftX = 0;
 		int preY = 0;
 		int i = startI;
 		while(true) {
@@ -91,20 +90,15 @@ public class Main {
 			int y = input[i].h;
 			
 			if (preY < 0 && y > 0) {
-				minX = x;
-//				maxX = x;
+				leftX = x;
 				maxY = y;
 			}
 			else if (preY > 0 && y < 0) {
-				pos.add(new Pos(minX, maxY));
+				pos.add(new Pos(leftX, maxY));
 				pos.add(new Pos(x, maxY));
-//				minX = Integer.MAX_VALUE;
-//				maxX = Integer.MIN_VALUE;
 				maxY = 0;
 			}
 			if (y > 0) {
-//				minX = Math.min(minX, x);
-//				maxX = Math.max(maxX, x);
 				maxY = Math.max(maxY, y); //가장 큰 값으로 저장
 			}
 			preY = y;

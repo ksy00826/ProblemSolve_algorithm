@@ -17,7 +17,7 @@ public class Main {
         //dp logic
         int[] dp = new int[K+1];
         for (int j = 1; j < K+1; j++){
-            dp[j] = Integer.MAX_VALUE-1;
+            dp[j] = 1000000;
         }
         for (int n = 1; n < N+1; n++){
             for (int k = coins[n-1]; k < K+1; k++){
@@ -26,6 +26,6 @@ public class Main {
         }
 
 //        System.out.println(Arrays.toString(dp));
-        System.out.println((dp[K] == Integer.MAX_VALUE-1)? -1 : dp[K]);
+        System.out.println((dp[K] == 1000000)? -1 : dp[K]);
     }
 }

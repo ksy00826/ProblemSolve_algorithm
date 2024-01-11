@@ -1,46 +1,59 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class Main {
+    //작은 수를 저장하는 PQ - 높은 값이 먼저 나옴
+    static Queue<Integer> minQ = new PriorityQueue<>(Collections.reverseOrder());
+    //큰 수를 저장하는 PQ
+    static Queue<Integer> maxQ = new PriorityQueue<>();
+    static int midNum = -10001;
 
-    static ArrayList<Integer> nums;
     public static void main(String[] args) throws IOException {
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
         int N = Integer.parseInt(in.readLine());
-        nums = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < N; i++){
-            int number = Integer.parseInt(in.readLine());
-            insertionSort(number, i);
-            sb.append(nums.get((i == 0)? 0 : i / 2)).append("\n");
+            int num = Integer.parseInt(in.readLine());
+
+            //Q에 삽입
+            if (midNum == -10001 || midNum >= num){
+                minQ.add(num);
+            }
+            else {
+                maxQ.add(num);
+            }
+
+            //Q 업데이트
+            if (i % 2 != 0) {
+                while(minQ.size() != maxQ.size()){
+                    if (minQ.size() > maxQ.size()){
+                        maxQ.add(minQ.poll());
+                    }
+                    else{
+                        minQ.add(maxQ.poll());
+                    }
+                }
+            }
+            else{
+                while(minQ.size() != maxQ.size() + 1){
+                    if (minQ.size() > maxQ.size()){
+                        maxQ.add(minQ.poll());
+                    }
+                    else{
+                        minQ.add(maxQ.poll());
+                    }
+                }
+            }
+
+            midNum = minQ.peek();
+            sb.append(midNum).append("\n");
         }
         System.out.println(sb);
     }
 
-    private static void insertionSort(int number, int i) {
-        //1. 이분탐색
-        int idx = binarySearch(number, 0, i);
-//        System.out.println(idx);
-
-        //2. 해당 위치에 삽입
-        nums.add(idx, number);
-//        System.out.println(nums);
-    }
-
-    private static int binarySearch(int number, int start, int end){
-//        System.out.println(start + " " + end);
-        if (start >= end) return end;
-
-        int mid = (start + end) / 2;
-        if (number <= nums.get(mid)){
-            end = mid;
-        }
-        else{
-            start = mid+1; //+1을 뺴먹으면 무한루프
-        }
-        return binarySearch(number, start, end);
-    }
 }

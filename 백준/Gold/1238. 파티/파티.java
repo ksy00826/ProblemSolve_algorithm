@@ -14,8 +14,10 @@ public class Main {
     }
     static int N, M, X;
     static ArrayList<Node>[] graph;
-    static int[][] distToX;
-    static int[] distToOthers;
+    static ArrayList<Node>[] reverseGraph;
+    static int[] distFromX;
+    static int[] distToX;
+
     public static void main(String[] args) throws IOException {
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
@@ -26,8 +28,10 @@ public class Main {
 
         //그래프 입력
         graph = new ArrayList[N+1];
+        reverseGraph = new ArrayList[N+1];
         for (int i = 0; i < N+1; i++){
             graph[i] = new ArrayList<>();
+            reverseGraph[i] = new ArrayList<>();
         }
         while(M-- > 0){
             st = new StringTokenizer(in.readLine());
@@ -35,28 +39,29 @@ public class Main {
             int end = Integer.parseInt(st.nextToken());
             int cost = Integer.parseInt(st.nextToken());
             graph[start].add(new Node(end, cost));
+            reverseGraph[end].add(new Node(start, cost));
         }
 
         //다익스트라
-        //1. 각 모든 노드들 ~ 다른 모든 노드들. N번의 다익스트라 시작.
-        distToX = new int[N+1][N+1];
-        for (int start = 1; start <= N; start++){
-            dijkstra(distToX[start], start);
-        }
-        //2. X에서 ~ 모든 노드
-        distToOthers = new int[N+1];
-        dijkstra(distToOthers, X);
+        distFromX = new int[N+1];
+        distToX = new int[N+1];
+        //1. X에서 다른 모든 노드까지 다익스트라 1번
+        dijkstra(distFromX, graph, X);
+        //2. 간선을 뒤집고 X에서 다른 모든 노드까지 다익스트라 1번
+        //간선 뒤집기
+        dijkstra(distToX, reverseGraph, X);
+
 
         //모든 학생들이 왔다갔다 하는 비용의 최댓값
         int maxVal = 0;
         for (int student = 1; student <= N; student++){
-            maxVal = Math.max(maxVal, distToX[student][X] + distToOthers[student]);
+            maxVal = Math.max(maxVal, distToX[student] + distFromX[student]);
         }
         System.out.println(maxVal);
     }
 
     static int INF = Integer.MAX_VALUE - 1000;
-    private static void dijkstra(int[] dist, int start) {
+    private static void dijkstra(int[] dist, List<Node>[] graph, int start) {
         //pq, visited, dist
         PriorityQueue<Node> pq = new PriorityQueue<>(new Comparator<Node>() {
             @Override

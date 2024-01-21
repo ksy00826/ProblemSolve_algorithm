@@ -46,15 +46,11 @@ public class Main {
         //print
         long ans1 = dist[0][mid1] + dist[1][mid2] + dist[2][mid2]; //1 -> mid1 -> mid2 -> N
         long ans2 = dist[0][mid2] + dist[1][mid2] + dist[2][mid1]; //1 -> mid2 -> mid1 -> N
-        if ((ans1 >= INF || ans1 < 0) && (ans2 >= INF || ans2 < 0)) System.out.println("-1");
-//        else if (ans1 >= INF || ans1 < 0) System.out.println(ans2);
-//        else if (ans2 >= INF || ans2 < 0) System.out.println(ans1);
-        else{
-            System.out.println((ans1 > ans2)? ans2 : ans1);
-        }
+        if (ans1 >= INF && ans2 >= INF) System.out.println("-1");
+        else System.out.println((ans1 > ans2)? ans2 : ans1);
     }
 
-    static int INF = 987654321;
+    static int INF = Integer.MAX_VALUE / 3 - 1;
     private static void dijkstra(int start, int i) {
         //pq, visited
         PriorityQueue<Node> pq = new PriorityQueue<>(new Comparator<Node>() {

@@ -49,12 +49,6 @@ public class Main {
             }
             Pos out = new Pos(0, 0);
 
-//            System.out.println(in1.r + " " + in1.c);
-//            System.out.println(in2.r + " " + in2.c);
-
-//            for (int i = 0; i < H; i++){
-//                System.out.println(Arrays.toString(map[i]));
-//            }
             //세명 모두를 시작으로 zeroOneBfs 를 돌려서 dist 배열에 각각 저장
             int[][][] dist = new int[3][H][W];
             for (int i = 0; i < H; i++){
@@ -68,20 +62,6 @@ public class Main {
             zeroOneBfs(dist[0], out);
             zeroOneBfs(dist[1], in1);
             zeroOneBfs(dist[2], in2);
-
-
-//            for (int i = 0; i < H; i++){
-//                System.out.println(Arrays.toString(dist[0][i]));
-//            }
-//            System.out.println();
-//            for (int i = 0; i < H; i++){
-//                System.out.println(Arrays.toString(dist[1][i]));
-//            }
-//            System.out.println();
-//            for (int i = 0; i < H; i++){
-//                System.out.println(Arrays.toString(dist[2][i]));
-//            }
-//            System.out.println();
 
             int minValue = Integer.MAX_VALUE;
             for (int i = 0; i < H; i++){

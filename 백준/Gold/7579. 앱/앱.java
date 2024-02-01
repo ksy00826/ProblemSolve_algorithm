@@ -25,10 +25,10 @@ public class Main {
             A[i] = new App(Integer.parseInt(st.nextToken()), Integer.parseInt(st2.nextToken()));
         }
 
-        int[][] dp = new int[N+1][100001];
+        int[][] dp = new int[N+1][10001];
         int minCost = Integer.MAX_VALUE;
         for (int i = 1; i < N+1; i++){
-            for (int j = 0; j < 100001; j++){
+            for (int j = 0; j < 10001; j++){
                 dp[i][j] = dp[i-1][j];
                 if (j >= A[i].cost)
                     dp[i][j] = Math.max(A[i].memory + dp[i-1][j-A[i].cost], dp[i][j]);

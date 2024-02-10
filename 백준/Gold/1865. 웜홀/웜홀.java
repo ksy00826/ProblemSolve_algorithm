@@ -57,7 +57,7 @@ public class Main {
 
     private static boolean bellmanFord() {
         Arrays.fill(dist, INF);
-        dist[1] = 0;
+//        dist[1] = 0;
 
         boolean isCycle = false;
         for (int i = 0; i < N; i++){

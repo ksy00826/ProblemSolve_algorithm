@@ -10,9 +10,9 @@ public class Main {
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
         //r 전처리
-        long[] rArr = new long[26];
+        long[] rArr = new long[50];
         rArr[0] = 1;
-        for (int i = 1; i < 26; i++){
+        for (int i = 1; i < 50; i++){
             rArr[i] = (rArr[i-1] * r) % M;
         }
 

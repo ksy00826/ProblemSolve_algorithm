@@ -26,22 +26,9 @@ public class Main {
         C = Integer.parseInt(st.nextToken());
         map = new char[R][C];
 
-        int mR = 0, mC = 0, zR = 0, zC = 0;
-
         for (int i = 0; i < R; i++) {
             map[i] = in.readLine().toCharArray();
-            for (int j = 0; j < C; j++) {
-                if (map[i][j] == 'M') {
-                    mR = i;
-                    mC = j;
-                } else if (map[i][j] == 'Z') {
-                    zR = i;
-                    zC = j;
-                }
-            }
         }
-
-//        Pos mid = move(new Pos(mR, mC));
 
         char block = 'x';
         for (int i = 0; i < R; i++){
@@ -56,54 +43,6 @@ public class Main {
             }
         }
 
-    }
-
-    private static Pos move(Pos start) {
-        int curR = start.r;
-        int curC = start.c;
-        int[][] visited = new int[R][C];
-        visited[curR][curC]++;
-
-        boolean isConnect = true;
-        int preDir = -1;
-
-        while (isConnect) {
-            isConnect = false;
-            boolean[] dirs = getDirs(map[curR][curC], preDir);
-            int saveR = curR;
-            int saveC = curC;
-
-            for (int di = 0; di < 4; di++) {
-                if (!dirs[di]) continue;
-
-                int nr = curR + dr[di];
-                int nc = curC + dc[di];
-
-                if (nr < 0 || nr >= R || nc < 0 || nc >= C || visited[nr][nc] == 1 || (map[nr][nc] == '+' && visited[nr][nc] == 2))
-                    continue;
-
-                if (saveR == curR && saveC == curC){
-                    saveR = nr;
-                    saveC = nc;
-                }
-
-                if (isConnected(map[nr][nc], di)) {
-                    visited[nr][nc]++;
-                    isConnect = true;
-                    curR = nr;
-                    curC = nc;
-                    preDir = di;
-                    break;
-                }
-            }
-
-            if (!isConnect) {
-                curR = saveR;
-                curC = saveC;
-            }
-        }
-
-        return new Pos(curR, curC);
     }
 
     private static boolean[] getDirs(char block, int preDir) {

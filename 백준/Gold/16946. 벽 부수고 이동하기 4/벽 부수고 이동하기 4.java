@@ -6,14 +6,6 @@ import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
-    static class Cell{
-        int no;
-        int cnt;
-        public Cell(int no, int cnt){
-            this.no = no;
-            this.cnt = cnt;
-        }
-    }
     static class Pos{
         int r, c;
         public Pos(int r, int c){
@@ -23,9 +15,8 @@ public class Main {
     }
     static int N, M;
     static int[][] map;
-    static Cell[][] cntMap;
+    static int[][] cntMap;
     static boolean[][] visited;
-    static Queue<Pos> saveQ = new ArrayDeque<>();
     public static void main(String[] args) throws IOException {
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
@@ -34,31 +25,23 @@ public class Main {
         M = Integer.parseInt(st.nextToken());
 
         map = new int[N][M];
-        cntMap = new Cell[N][M];
+        cntMap = new int[N][M];
         for (int i = 0; i < N; i++){
             int j = 0;
             for (char c : in.readLine().toCharArray()){
                 map[i][j++] = c - '0';
             }
         }
-        for (int i = 0; i < N; i++){
-            for (int j = 0; j < M; j++){
-                cntMap[i][j] = new Cell(-1, 0);
-            }
-        }
 
         visited = new boolean[N][M];
+        int[] cnts = new int[N*M];
         int no = 0;
         for (int i = 0; i < N; i++){
             for (int j = 0; j < M; j++){
                 if (visited[i][j] || map[i][j] == 1) continue;
                 //0인 칸에서 bfs를 해서 갯수를 구하기
-                int cnt = bfs(new Pos(i, j));
-                for (Pos pos : saveQ){
-                    cntMap[pos.r][pos.c] = new Cell(no, cnt);
-                }
+                cnts[no] = bfs(new Pos(i, j), no);
                 no++;
-                saveQ.clear();
             }
         }
 
@@ -73,10 +56,10 @@ public class Main {
                 for (int di = 0; di < 4; di++){
                     int nr = i + dr[di];
                     int nc = j + dc[di];
-                    if (nr < 0 || nr >= N || nc < 0 || nc >= M || map[nr][nc] == 1 || used[cntMap[nr][nc].no]) continue;
+                    if (nr < 0 || nr >= N || nc < 0 || nc >= M || map[nr][nc] == 1 || used[cntMap[nr][nc]]) continue;
 
-                    used[cntMap[nr][nc].no] = true;
-                    sum += cntMap[nr][nc].cnt;
+                    used[cntMap[nr][nc]] = true;
+                    sum += cnts[cntMap[nr][nc]];
                 }
                 res[i][j] = sum;
             }
@@ -94,7 +77,7 @@ public class Main {
 
     static int[] dr = {-1, 1, 0, 0};
     static int[] dc = {0, 0, -1, 1};
-    private static int bfs(Pos start) {
+    private static int bfs(Pos start, int no) {
         Queue<Pos> q = new ArrayDeque<>();
         q.offer(start);
         visited[start.r][start.c] = true;
@@ -102,7 +85,7 @@ public class Main {
 
         while(!q.isEmpty()){
             Pos cur = q.poll();
-            saveQ.offer(cur);
+            cntMap[cur.r][cur.c] = no;
 
             for (int di = 0; di < 4; di++){
                 int nr = cur.r + dr[di];

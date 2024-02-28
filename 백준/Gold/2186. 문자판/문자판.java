@@ -47,19 +47,12 @@ public class Main {
             }
         }
 
-        StringBuilder sb = new StringBuilder();
         int sum = 0;
         for (int i = 0; i < N; i++){
             for (int j = 0; j < M; j++){
-                for (int l = 0; l < target.length(); l++){
-                    sb.append(memo[i][j][l]).append(" ");
-                }
-                sb.append("|");
                 if (memo[i][j][0] != -1) sum += memo[i][j][0];
             }
-            sb.append("\n");
         }
-//        System.out.println(sb);
         System.out.println(sum);
 
     }
@@ -67,8 +60,6 @@ public class Main {
     static int[] dr = {-1, 1, 0, 0};
     static int[] dc = {0, 0, -1, 1};
     private static int dfs(int i, int j, int pos) {
-//        System.out.println(i + " " + j + " " + pos);
-        int cnt = 0;
         for (int k = 1; k <= K; k++){
             for (int di = 0; di < 4; di++){
                 int nr = i + dr[di]*k;
@@ -77,8 +68,6 @@ public class Main {
 
                 int nextPos = pos + 1;
                 if (map[nr][nc] == target.charAt(nextPos)){
-//                    System.out.println("sub " + nr + " " + nc + " " + nextPos);
-
                     if (nextPos == target.length()-1) {
                         memo[nr][nc][nextPos] = 1;
                     }
@@ -88,9 +77,6 @@ public class Main {
                     }
                     if (memo[i][j][pos] == -1) memo[i][j][pos] = 0;
                     memo[i][j][pos] += memo[nr][nc][nextPos];
-
-//                    System.out.println(memo[nr][nc][nextPos]);
-//                    System.out.println(memo[i][j][pos]);
                 }
             }
         }

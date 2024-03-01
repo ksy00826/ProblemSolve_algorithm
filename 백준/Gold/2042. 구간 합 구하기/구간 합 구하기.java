@@ -4,85 +4,82 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
+    static int N, M, K;
+    static long[] numbers;
+    static long[] tree;
+    public static void main(String[] args) throws IOException {
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
-	private static int N, M, K; //수의 개수, 변경 횟수, 구간합을 구하는 횟수
-	private static long[] A; //수들을 저장하고 있는 배열
-	
-	//L[i]: 어떤 수 i를 이진수로 나타내었을 때, 마지막 1이 나타내는 값
-	//예 : L[3] = 1, L[10] = 2, L[12] = 4
-	//tree[i] 는 A[i]부터 앞으로(좌측으로) L[i][개의 합이 저장되어 있음
-	
-	private static long[] tree;
-	private static StringBuilder sb = new StringBuilder();
-	
-	public static void main(String[] args) throws IOException {
-		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-		
-		StringTokenizer st = new StringTokenizer(in.readLine(), " ");
-		N = Integer.parseInt(st.nextToken());
-		M = Integer.parseInt(st.nextToken());
-		K = Integer.parseInt(st.nextToken());
-		
-		A = new long[N+1]; //1번 인덱스부터 사용하기 위해 +1
-		tree = new long[N+1];
-		
-		//1. A 배열에 있는 원소들을 아 Fenwick Tree에 담기
-		for (int i = 1; i <= N; i++) {
-			st = new StringTokenizer(in.readLine(), " ");
-			A[i] = Long.parseLong(st.nextToken());
-			update(i, A[i] - 0);
-		}
-		
-		//2. Fenwick Tree를 이용하여 값 갱신 및 구간 합 구하기
-		for (int i = 0; i < M + K; i++) {
-			st = new StringTokenizer(in.readLine());
-			int a = Integer.parseInt(st.nextToken());
-			
-			//업데이트 연산일 경우
-			if (a == 1) {
-				int b = Integer.parseInt(st.nextToken());
-				long c = Long.parseLong(st.nextToken());
-				update(b, c-A[b]); //바뀐 크기(diff) 만큼 적용
-				A[b] = c; //배열 값 갱신
-			}
-			//구간 합(interval sum) 연산의 경우
-			else if (a == 2) {
-				int b = Integer.parseInt(st.nextToken());
-				int c = Integer.parseInt(st.nextToken());
-				long sum = intervalSum(b, c);
-				sb.append(sum).append("\n");
-			}
-		}
-		
-		System.out.println(sb);
-	}
+        StringTokenizer st = new StringTokenizer(in.readLine());
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        K = Integer.parseInt(st.nextToken());
 
-	//i: Fenwick Tree의 i번째 수
-	//diff : 이전 값과 변경될 값의 차이(새로 들어온 입력. 구간합.)
-	//i번째 수를 diff만큼 더하는 함수
-	private static void update(int i, long diff) {
-		while(i <= N) {
-			tree[i] += diff;
-			
-			//i를 이진수로 나타냈을 때, 마지막 1이 나타내는 값 구하기
-			//구한 값 만큼 점프
-			i += (i & -i);
-		}
-	}
-	
-	//1부터 N까지의 합(누적합) 구하기
-	private static long prefixSum(int i) {
-		long result = 0;
-		while(i > 0) {
-			result += tree[i];
-			
-			//구한 값 만큼 앞으로(좌측으로) 점프
-			i -= (i & -i);
-		}
-		return result;
-	}
-	
-	private static long intervalSum(int start, int end) {
-		return prefixSum(end) - prefixSum(start-1);
-	}
+        numbers = new long[N];
+        for (int i = 0; i < N; i++){
+            numbers[i] = Long.parseLong(in.readLine());
+        }
+
+        initTree();
+        fillTree(1, 0, N-1);
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < M+K; i++){
+            st = new StringTokenizer(in.readLine());
+            int cmd = Integer.parseInt(st.nextToken());
+            switch(cmd){
+                case 1: //변경
+                    int changeIdx = Integer.parseInt(st.nextToken())-1;
+                    long changeValue = Long.parseLong(st.nextToken());
+                    long diff = changeValue - numbers[changeIdx];
+                    numbers[changeIdx] = changeValue;
+                    changeTree(1, 0, N-1, changeIdx, diff);
+                    break;
+                case 2: //구간합
+                    int left = Integer.parseInt(st.nextToken())-1;
+                    int right = Integer.parseInt(st.nextToken())-1;
+                    long sum = getSum(1, 0, N-1, left, right);
+                    sb.append(sum).append("\n");
+                    break;
+            }
+        }
+        System.out.println(sb);
+    }
+
+    private static long getSum(int nodeIdx, int start, int end, int left, int right) {
+        if (start > right || end < left) return 0;
+
+        if (left <= start && end <= right) return tree[nodeIdx];
+
+        return getSum(nodeIdx*2, start, (start+end)/2, left, right)
+                + getSum(nodeIdx*2+1, (start+end)/2+1, end, left, right);
+    }
+
+    private static void changeTree(int nodeIdx, int start, int end, int changeIdx, long diff) {
+        //범위에 속하지 않으면 패스
+        if (start > changeIdx || changeIdx > end) return;
+
+        //범위에 속하면
+        tree[nodeIdx] += diff;
+        if (start != end){
+            changeTree(nodeIdx*2, start, (start+end)/2, changeIdx, diff);
+            changeTree(nodeIdx*2+1, (start+end)/2+1, end, changeIdx, diff);
+        }
+    }
+
+    private static long fillTree(int nodeIdx, int start, int end) {
+        //리프 노드
+        if (start == end) return tree[nodeIdx] = numbers[start];
+
+        //그 외 노드
+        return tree[nodeIdx] =
+                fillTree(nodeIdx*2, start, (start+end)/2)
+                + fillTree(nodeIdx*2+1, (start+end)/2+1, end);
+    }
+
+    private static void initTree() {
+        int h = (int) Math.ceil(Math.log(N) / Math.log(2));
+        int treeSize = (int) Math.pow(2, h+1);
+        tree = new long[treeSize];
+    }
 }

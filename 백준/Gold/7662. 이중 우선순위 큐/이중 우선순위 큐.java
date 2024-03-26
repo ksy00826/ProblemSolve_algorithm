@@ -12,11 +12,7 @@ public class Main {
         StringBuilder sb = new StringBuilder();
         while (T-- > 0) {
             int N = Integer.parseInt(in.readLine());
-
-            PriorityQueue<Integer> minQ = new PriorityQueue<>();
-            PriorityQueue<Integer> maxQ = new PriorityQueue<>(Collections.reverseOrder());
-
-            Map<Integer, Integer> existMap = new HashMap<>(); //큐에 넣는 숫자마다 총 개수를 저장
+            TreeMap<Integer, Integer> treeMap = new TreeMap<>();
             while (N-- > 0) {
                 StringTokenizer st = new StringTokenizer(in.readLine());
                 String cmd = st.nextToken();
@@ -24,58 +20,19 @@ public class Main {
 
                 if (cmd.equals("I")) {
                     //삽입
-                    int cnt = existMap.getOrDefault(value, 0);
-                    existMap.put(value, cnt+1);
-                    maxQ.offer(value);
-                    minQ.offer(value);
-                } else if (value == 1) {
-                    //최댓값 삭제
-                    while(!maxQ.isEmpty()){
-                        int removeVal = maxQ.poll();
-                        if (existMap.containsKey(removeVal)){
-                            //삭제된 원소가 아니라면
-                            int cnt = existMap.get(removeVal);
-                            if (cnt == 1) existMap.remove(removeVal);
-                            else existMap.put(removeVal, cnt-1);
-                            break;
-                        }
-                    }
+                    treeMap.put(value, treeMap.getOrDefault(value, 0) + 1);
                 } else {
-                    //최솟값 삭제
-                    while(!minQ.isEmpty()){
-                        int removeVal = minQ.poll();
-                        if (existMap.containsKey(removeVal)){
-                            //삭제된 원소가 아니라면
-                            int cnt = existMap.get(removeVal);
-                            if (cnt == 1) existMap.remove(removeVal);
-                            else existMap.put(removeVal, cnt-1);
-                            break;
-                        }
-                    }
+                    if (treeMap.isEmpty()) continue;
+
+                    int removeVal = (value == 1)? treeMap.lastKey() : treeMap.firstKey();
+                    int cnt = treeMap.get(removeVal);
+
+                    if (cnt == 1) treeMap.remove(removeVal); //이제 없어지면 삭제
+                    else treeMap.put(removeVal, cnt-1);
                 }
+//                System.out.println(treeMap);
             }
-            if (existMap.isEmpty()) {
-                sb.append("EMPTY").append("\n");
-            } else {
-                //최댓값 얻기
-                while(!maxQ.isEmpty()){
-                    int val = maxQ.poll();
-                    if (existMap.containsKey(val)){
-                        //삭제된 원소가 아니라면
-                        sb.append(val).append(" ");
-                        break;
-                    }
-                }
-                //최솟값 얻기
-                while(!minQ.isEmpty()){
-                    int val = minQ.poll();
-                    if (existMap.containsKey(val)){
-                        //삭제된 원소가 아니라면
-                        sb.append(val).append("\n");
-                        break;
-                    }
-                }
-            }
+            sb.append((treeMap.isEmpty())? "EMPTY\n" : treeMap.lastKey() + " " + treeMap.firstKey() + "\n");
         }
         System.out.println(sb);
     }
